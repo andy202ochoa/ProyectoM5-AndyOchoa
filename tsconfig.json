@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ES2022", //Deciden a que versión de-s
+        "module": "NodeNext", //JavaScrit se convierte tu codigo
+        "moduleResolution": "NodeNext",
+        "outDir": "dist", //Carpeta donde sale el resultado final
+        "rootDir": "src", //Carpeta que contiene el codigo original
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "src"
+    ]
+}
