@@ -2,6 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { registerListRepositories } from "./tools/list-repositories.js";
+import { registerCreateRepository } from "./tools/create-repository.js";
+import { registerCreateIssue } from "./tools/create-issue.js";
 
 // 1. Crear el servidor
 const server = new McpServer({
@@ -25,8 +27,10 @@ server.registerTool(
     }
 );
 
-// 2. Registrar la tool list_repositories
+// Registrar tools
 registerListRepositories(server);
+registerCreateRepository(server);
+registerCreateIssue(server);
 
 // 3. Conectar el servidor por stdio
 const transport = new StdioServerTransport();
