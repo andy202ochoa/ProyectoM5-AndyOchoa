@@ -4,6 +4,8 @@ import { z } from "zod";
 import { registerListRepositories } from "./tools/list-repositories.js";
 import { registerCreateRepository } from "./tools/create-repository.js";
 import { registerCreateIssue } from "./tools/create-issue.js";
+import { registerCreateCommit } from "./tools/create-commit.js";
+import { registerListIssues } from "./tools/list-issues.js";
 
 // 1. Crear el servidor
 const server = new McpServer({
@@ -31,6 +33,9 @@ server.registerTool(
 registerListRepositories(server);
 registerCreateRepository(server);
 registerCreateIssue(server);
+registerCreateCommit(server);
+registerListIssues(server);
+
 
 // 3. Conectar el servidor por stdio
 const transport = new StdioServerTransport();
