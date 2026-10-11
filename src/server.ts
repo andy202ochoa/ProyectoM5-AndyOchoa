@@ -6,6 +6,7 @@ import { registerCreateRepository } from "./tools/create-repository.js";
 import { registerCreateIssue } from "./tools/create-issue.js";
 import { registerCreateCommit } from "./tools/create-commit.js";
 import { registerListIssues } from "./tools/list-issues.js";
+import { logger } from "./utils/logging.js";
 
 // 1. Crear el servidor
 const server = new McpServer({
@@ -42,4 +43,4 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 
 // Los logs van a stderr: stdout está reservado para el protocolo
-console.error("Servidor MCP iniciado");
+logger.info("Servidor MCP iniciado");

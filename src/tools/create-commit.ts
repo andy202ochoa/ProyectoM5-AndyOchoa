@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createCommitSchema } from "../schemas/index.js";
 import { createCommit } from "../github/operations.js";
+import { runTool } from "../utils/run-tool.js";
 
 export function registerCreateCommit(server: McpServer) {
     server.registerTool(
@@ -13,19 +14,14 @@ export function registerCreateCommit(server: McpServer) {
                 "No sirve para crear repositorios, issues ni ramas.",
             inputSchema: createCommitSchema,
         },
-        async ({ owner, repo, path, content, message, branch }) => {
-            const result = await createCommit({ owner, repo, path, content, message, branch });
+        async ({ owner, repo, path, content, message, branch }) =>
+            runTool("create_commit", { repo }, async () => {
+                const result = await createCommit({ owner, repo, path, content, message, branch });
 
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text:
-                            `Archivo ${result.action}: ${result.path} en ${result.repo}\n` +
-                            `Commit ${result.commitSha}\nURL: ${result.url}`,
-                    },
-                ],
-            };
-        }
+                return (
+                    `Archivo ${result.action}: ${result.path} en ${result.repo}\n` +
+                    `Commit ${result.commitSha}\nURL: ${result.url}`
+                );
+            })
     );
 }

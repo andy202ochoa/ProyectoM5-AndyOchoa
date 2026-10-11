@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { listIssuesSchema } from "../schemas/index.js";
 import { listIssues } from "../github/operations.js";
+import { runTool } from "../utils/run-tool.js";
 
 export function registerListIssues(server: McpServer) {
     server.registerTool(
@@ -13,11 +14,11 @@ export function registerListIssues(server: McpServer) {
                 "No sirve para crear issues ni para listar repositorios.",
             inputSchema: listIssuesSchema,
         },
-        async ({ owner, repo, per_page }) => {
-            const result = await listIssues({ owner, repo, perPage: per_page });
+        async ({ owner, repo, per_page }) =>
+            runTool("list_issues", { repo }, async () => {
+                const result = await listIssues({ owner, repo, perPage: per_page });
 
-            const text =
-                result.issues.length === 0
+                return result.issues.length === 0
                     ? `No hay issues abiertos en ${result.repo}.`
                     : `Issues abiertos en ${result.repo}:\n` +
                     result.issues
@@ -27,8 +28,6 @@ export function registerListIssues(server: McpServer) {
                                 `${i.labels.length ? ` [${i.labels.join(", ")}]` : ""}\n  ${i.url}`
                         )
                         .join("\n");
-
-            return { content: [{ type: "text", text }] };
-        }
+            })
     );
 }

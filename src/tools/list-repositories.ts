@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { listRepositoriesSchema } from "../schemas/index.js";
 import { listRepositories } from "../github/operations.js";
+import { runTool } from "../utils/run-tool.js";
 
 export function registerListRepositories(server: McpServer) {
     server.registerTool(
@@ -12,11 +13,11 @@ export function registerListRepositories(server: McpServer) {
                 "No sirve para listar issues ni commits.",
             inputSchema: listRepositoriesSchema,
         },
-        async ({ per_page }) => {
-            const repos = await listRepositories(per_page);
+        async ({ per_page }) =>
+            runTool("list_repositories", {}, async () => {
+                const repos = await listRepositories(per_page);
 
-            const text =
-                repos.length === 0
+                return repos.length === 0
                     ? "No se encontraron repositorios."
                     : repos
                         .map(
@@ -26,8 +27,6 @@ export function registerListRepositories(server: McpServer) {
                                 `${r.description ? `: ${r.description}` : ""}\n  ${r.url}`
                         )
                         .join("\n");
-
-            return { content: [{ type: "text", text }] };
-        }
+            })
     );
 }

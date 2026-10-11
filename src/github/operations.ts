@@ -1,5 +1,6 @@
 import type { Octokit } from "@octokit/rest";
 import { getOctokit } from "./client.js";
+import { ValidationError } from "../errors/index.js";
 
 // Si no se indica dueño, usamos el usuario dueño del token
 async function resolveOwner(octokit: Octokit, owner?: string): Promise<string> {
@@ -91,7 +92,7 @@ export async function createCommit(params: {
         });
 
         if (Array.isArray(existing) || existing.type !== "file") {
-            throw new Error(`La ruta "${params.path}" es una carpeta, no un archivo.`);
+            throw new ValidationError(`La ruta "${params.path}" es una carpeta, no un archivo.`);
         }
         sha = existing.sha;
     } catch (error) {

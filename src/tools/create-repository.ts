@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createRepositorySchema } from "../schemas/index.js";
 import { createRepository } from "../github/operations.js";
+import { runTool } from "../utils/run-tool.js";
 
 export function registerCreateRepository(server: McpServer) {
     server.registerTool(
@@ -13,19 +14,14 @@ export function registerCreateRepository(server: McpServer) {
                 "No la uses para repositorios que ya existen ni para crear issues.",
             inputSchema: createRepositorySchema,
         },
-        async ({ name, description, private: isPrivate }) => {
-            const repo = await createRepository({ name, description, isPrivate });
+        async ({ name, description, private: isPrivate }) =>
+            runTool("create_repository", {}, async () => {
+                const repo = await createRepository({ name, description, isPrivate });
 
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text:
-                            `Repositorio creado: ${repo.name} (${repo.private ? "privado" : "público"})\n` +
-                            `URL: ${repo.url}`,
-                    },
-                ],
-            };
-        }
+                return (
+                    `Repositorio creado: ${repo.name} (${repo.private ? "privado" : "público"})\n` +
+                    `URL: ${repo.url}`
+                );
+            })
     );
 }
