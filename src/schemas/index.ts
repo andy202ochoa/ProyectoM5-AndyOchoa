@@ -2,6 +2,7 @@ import { z } from "zod";
 // --- Piezas reutilizables ---
 
 // Nombre para un repositorio NUEVO: reglas de la consigna
+
 const newRepoName = z
     .string()
     .min(3, "El nombre del repositorio debe tener al menos 3 caracteres.")
@@ -113,3 +114,5 @@ export const listIssuesSchema = {
         .default(30)
         .describe("Cantidad de issues a listar (entre 1 y 100). Por defecto 30."),
 };
+
+
